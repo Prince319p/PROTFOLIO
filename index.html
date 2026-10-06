@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prince Yadav | Portfolio</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(18, 26, 43, 0.7);
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-purple: #7f00ff;
+            --accent-green: #00ff88;
+            --accent-gold: #ffb703;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --active-accent: var(--accent-cyan);
+            --active-accent-rgb: 0, 242, 254;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        canvas#particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--active-accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--active-accent);
+            text-shadow: 0 0 10px rgba(var(--active-accent-rgb), 0.5);
+        }
+
+        .theme-switcher {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .dot:hover, .dot.active {
+            border-color: #fff;
+            transform: scale(1.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 .highlight {
+            color: var(--active-accent);
+            background: linear-gradient(90deg, var(--active-accent), #4facfe);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .typing-text {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            min-height: 30px;
+        }
+
+        .hero-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .profile-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+        }
+
+        .profile-container::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--active-accent), transparent, var(--accent-purple));
+            animation: spin 6s linear infinite;
+        }
+
+        .profile-photo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+            border: 3px solid var(--bg-color);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(var(--active-accent-rgb), 0.1);
+            border: 1px solid var(--active-accent);
+            color: var(--active-accent);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .quote-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--active-accent);
+            padding: 15px 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+            font-style: italic;
+            color: var(--text-main);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .social-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-btn:hover {
+            background: var(--active-accent);
+            color: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(var(--active-accent-rgb), 0.4);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 80px 0 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--active-accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: var(--active-accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .about-p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 15px;
+            font-size: 0.98rem;
+        }
+
+        /* Skill List Styling */
+        .skill-item {
+            margin-bottom: 20px;
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .skill-desc {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 8px;
+        }
+
+        .progress-line {
+            height: 6px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-line span {
+            height: 100%;
+            background: linear-gradient(90deg, var(--active-accent), var(--accent-purple));
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            border-left: 2px solid var(--glass-border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--active-accent);
+            box-shadow: 0 0 10px var(--active-accent);
+        }
+
+        /* Contact Form */
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: var(--active-accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(90deg, var(--active-accent), #4facfe);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(var(--active-accent-rgb), 0.4);
+        }
+
+        /* Command Palette Modal */
+        .cmd-palette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 100px;
+        }
+
+        .cmd-box {
+            width: 90%;
+            max-width: 600px;
+            background: var(--bg-color);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+
+        .cmd-input {
+            width: 100%;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--glass-border);
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .cmd-list {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .cmd-item {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .cmd-item:hover {
+            background: rgba(var(--active-accent-rgb), 0.1);
+            color: var(--active-accent);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle Background -->
+    <canvas id="particles"></canvas>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-code"></i> PRINCE<span>.YADAV</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#objective">Objective</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="theme-switcher">
+            <div class="dot active" style="background:#00f2fe" onclick="setTheme('cyan')"></div>
+            <div class="dot" style="background:#7f00ff" onclick="setTheme('purple')"></div>
+            <div class="dot" style="background:#00ff88" onclick="setTheme('green')"></div>
+            <div class="dot" style="background:#ffb703" onclick="setTheme('gold')"></div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Hero & About Section -->
+        <section class="hero" id="about">
+            <div class="hero-text">
+                <div class="badge"><i class="fa-solid fa-graduation-cap"></i> B.Tech CSE @ IET Agra</div>
+                <h1>Hi, I'm <br><span class="highlight">Prince Yadav</span></h1>
+                <div class="typing-text" id="typewriter"></div>
+
+                <div class="card" style="padding:25px; margin-top: 10px;">
+                    <h3><i class="fa-solid fa-user"></i> About Me</h3>
+                    <p class="about-p">
+                        I am Prince Yadav, a passionate and motivated B.Tech Computer Science and Engineering student at the <strong>Institute of Engineering and Technology, Dr. Bhimrao Ambedkar University, Agra</strong>.
+                    </p>
+                    <p class="about-p">
+                        I have a strong interest in Web Development and Programming and enjoy building creative, responsive, and user-friendly digital solutions. I have hands-on knowledge of <strong>HTML, CSS, JavaScript, and Python</strong>, enabling me to work on frontend development and programming-based projects.
+                    </p>
+                    <p class="about-p">
+                        I am continuously improving my technical skills by learning new technologies, working on projects, and solving programming problems.
+                    </p>
+                </div>
+
+                <div class="quote-box">
+                    “Learning, building, and improving every day.”
+                </div>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="hero-card" id="tiltCard">
+                <div class="profile-container">
+                    <img src="profile.jpg.jpeg" alt="Prince Yadav" class="profile-photo" id="profileImg">
+                </div>
+                <h2>Prince Yadav</h2>
+                <p style="color: var(--text-muted); margin-top: 5px;">Web Developer & Programmer</p>
+                
+                <div class="social-links">
+                    <a href="mailto:pyadav31032007@gmail.com" class="social-btn" title="Email Me"><i class="fa-solid fa-envelope"></i></a>
+                    <a href="#" class="social-btn" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/prince-yadav-2910053a4?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="social-btn" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                </div>
+
+                <a href="#contact" class="btn" style="margin-top:25px; width:100%;">Get In Touch</a>
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <h2 class="section-title" id="skills"><i class="fa-solid fa-layer-group"></i> Technical Skills</h2>
+        <div class="grid">
+            <div class="card">
+                <h3><i class="fa-solid fa-code"></i> Core Technologies</h3>
+                <br>
+                
+                <div class="skill-item">
+                    <div class="skill-header"><span>HTML</span><span>Semantic HTML5</span></div>
+                    <div class="skill-desc">Web Page Structure & Semantic HTML</div>
+                    <div class="progress-line"><span style="width: 95%;"></span></div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-header"><span>CSS</span><span>Styling & Layouts</span></div>
+                    <div class="skill-desc">Responsive Design & Styling</div>
+                    <div class="progress-line"><span style="width: 90%;"></span></div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-header"><span>JavaScript</span><span>ES6+ Features</span></div>
+                    <div class="skill-desc">Interactive & Dynamic Web Applications</div>
+                    <div class="progress-line"><span style="width: 80%;"></span></div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-header"><span>Python</span><span>Logic & Scripting</span></div>
+                    <div class="skill-desc">Programming, Logic Building & Problem Solving</div>
+                    <div class="progress-line"><span style="width: 85%;"></span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fa-solid fa-compass"></i> Focus Areas</h3>
+                <br>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4 style="color:var(--text-main)">Web Development</h4>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Building responsive, fast, and modern websites using clean code practices.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 style="color:var(--text-main)">Software Development</h4>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Exploring scalable software solutions, algorithms, and logic building with Python.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 style="color:var(--text-main)">Continuous Learning</h4>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Exploring modern frontend frameworks, emerging tools, and best coding standards.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Career Objective -->
+        <h2 class="section-title" id="objective"><i class="fa-solid fa-bullseye"></i> Career Objective</h2>
+        <div class="card">
+            <p class="about-p" style="font-size:1.1rem; color:var(--text-main);">
+                My goal is to become a skilled <strong>Software/Web Developer</strong> and build innovative, scalable, and user-friendly applications. I am always eager to learn new technologies, take on challenging projects, and grow as a professional in the field of Computer Science.
+            </p>
+        </div>
+
+        <!-- Contact Section -->
+        <h2 class="section-title" id="contact"><i class="fa-solid fa-paper-plane"></i> Contact Me</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Let's Connect</h3>
+                <p style="color:var(--text-muted); margin: 15px 0;">Feel free to reach out for collaborations, project opportunities, or general queries.</p>
+                
+                <p><i class="fa-solid fa-envelope" style="color:var(--active-accent)"></i> pyadav31032007@gmail.com</p>
+                <br>
+                <p><i class="fa-solid fa-graduation-cap" style="color:var(--active-accent)"></i> IET, Dr. Bhimrao Ambedkar University, Agra</p>
+            </div>
+
+            <div class="card contact-form">
+                <form onsubmit="handleContact(event)">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea rows="4" placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn" style="width:100%">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Command Palette (Cmd+K) -->
+    <div class="cmd-palette" id="cmdPalette">
+        <div class="cmd-box">
+            <input type="text" class="cmd-input" placeholder="Type a command or search..." id="cmdInput">
+            <ul class="cmd-list">
+                <li class="cmd-item" onclick="scrollToSec('about')"><span><i class="fa-solid fa-user"></i> About Prince</span> <span>Esc</span></li>
+                <li class="cmd-item" onclick="scrollToSec('skills')"><span><i class="fa-solid fa-code"></i> Technical Skills</span></li>
+                <li class="cmd-item" onclick="scrollToSec('objective')"><span><i class="fa-solid fa-bullseye"></i> Career Objective</span></li>
+                <li class="cmd-item" onclick="copyEmail()"><span><i class="fa-solid fa-copy"></i> Copy Email Address</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- JavaScript Section -->
+    <script>
+        // Typing Effect
+        const phrases = ["Web Developer & Programmer", "B.Tech CSE Student @ IET Agra", "Learning & Building Every Day"];
+        let i = 0, j = 0, isDeleting = false;
+        
+        function type() {
+            const current = phrases[i];
+            const el = document.getElementById('typewriter');
+            
+            if (isDeleting) {
+                el.textContent = current.substring(0, j-1);
+                j--;
+            } else {
+                el.textContent = current.substring(0, j+1);
+                j++;
+            }
+
+            if (!isDeleting && j === current.length) {
+                isDeleting = true;
+                setTimeout(type, 2000);
+            } else if (isDeleting && j === 0) {
+                isDeleting = false;
+                i = (i + 1) % phrases.length;
+                setTimeout(type, 500);
+            } else {
+                setTimeout(type, isDeleting ? 50 : 100);
+            }
+        }
+        type();
+
+        // 3D Parallax Tilt Card Effect
+        const card = document.getElementById('tiltCard');
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width/2;
+            const y = e.clientY - rect.top - rect.height/2;
+            card.style.transform = `rotateX(${-y/10}deg) rotateY(${x/10}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+
+        // Particle Canvas Background
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 80; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Theme Toggle Function
+        function setTheme(theme) {
+            const root = document.documentElement;
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach(d => d.classList.remove('active'));
+
+            if (theme === 'cyan') {
+                root.style.setProperty('--active-accent', '#00f2fe');
+                root.style.setProperty('--active-accent-rgb', '0, 242, 254');
+                dots[0].classList.add('active');
+            } else if (theme === 'purple') {
+                root.style.setProperty('--active-accent', '#7f00ff');
+                root.style.setProperty('--active-accent-rgb', '127, 0, 255');
+                dots[1].classList.add('active');
+            } else if (theme === 'green') {
+                root.style.setProperty('--active-accent', '#00ff88');
+                root.style.setProperty('--active-accent-rgb', '0, 255, 136');
+                dots[2].classList.add('active');
+            } else if (theme === 'gold') {
+                root.style.setProperty('--active-accent', '#ffb703');
+                root.style.setProperty('--active-accent-rgb', '255, 183, 3');
+                dots[3].classList.add('active');
+            }
+        }
+
+        // Command Palette Toggle (Cmd + K / Ctrl + K)
+        const cmdPalette = document.getElementById('cmdPalette');
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                cmdPalette.style.display = cmdPalette.style.display === 'flex' ? 'none' : 'flex';
+            }
+            if (e.key === 'Escape') {
+                cmdPalette.style.display = 'none';
+            }
+        });
+
+        function scrollToSec(id) {
+            cmdPalette.style.display = 'none';
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyEmail() {
+            navigator.clipboard.writeText('pyadav31032007@gmail.com');
+            alert('Email address copied to clipboard!');
+            cmdPalette.style.display = 'none';
+        }
+
+        function handleContact(e) {
+            e.preventDefault();
+            alert('Thank you, Prince Yadav has received your message!');
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>
